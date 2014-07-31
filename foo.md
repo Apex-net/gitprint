@@ -1,7 +1,3 @@
-Portal: API per Agenda effedesign
-=================================
-
-
 ## Descrizione
 
 API per l'integrazione con Agenda effedesign.
@@ -36,7 +32,7 @@ Accept-Language: en-US
   "id" : "m.rossi",
   "contesto": {
     "id": "df62f04...",
-    "nome": "carriera_studente|profilo_azienda|ecc."
+    "tipo": "carriera_studente|profilo_azienda|ecc."
   }
 }
 ```
@@ -55,21 +51,21 @@ Content-Language: it
 [
   {
     "funzione": {
-      "nome": "funz_uno"
+      "id": "funz_uno"
     },
     "visibile": true,
     "bloccato": false
   },
   {
     "funzione": {
-      "nome": "funz_due"
+      "id": "funz_due"
     },
     "visibile": true,
     "bloccato": true
   },
   {
     "funzione": {
-      "nome": "funz_tre"
+      "id": "funz_tre"
     },
     "visibile": false,
     "bloccato": true
@@ -101,7 +97,7 @@ Accept-Language: en-US
   "id" : "m.rossi",
   "contesto": {
     "id": "df62f04...",
-    "nome": "carriera_studente|profilo_azienda|ecc."
+    "tipo": "carriera_studente|profilo_azienda|ecc."
   }
 }
 ```
@@ -124,15 +120,15 @@ Content-Language: it
 ```json
 [
   {
-    "nome": "funz_uno",
+    "id": "funz_uno",
     "contenuto_html": "<p>Content of the document......</p>"
   },
   {
-    "nome": "funz_due",
+    "id": "funz_due",
     "contenuto_html": "<p>Content of the document......</p>"
   },
   {
-    "nome": "funz_tre",
+    "id": "funz_tre",
     "contenuto_html": "<p>Content of the document......</p>"
   }
 ]
@@ -160,7 +156,7 @@ Accept-Language: en-US
   "id" : "m.rossi",
   "contesto": {
     "id": "df62f04...",
-    "nome": "carriera_studente|profilo_azienda|ecc."
+    "tipo": "carriera_studente|profilo_azienda|ecc."
   }
 }
 ```
@@ -182,7 +178,7 @@ Content-Language: it
 
 ```json
 {
-  "nome": "funz_uno",
+  "id": "funz_uno",
   "contenuto_html": "<p>Content of the document......</p>"
 }
 ```
@@ -209,7 +205,7 @@ Accept-Language: en-US
   "id" : "m.rossi",
   "contesto": {
     "id": "df62f04...",
-    "nome": "carriera_studente|profilo_azienda|ecc."
+    "tipo": "carriera_studente|profilo_azienda|ecc."
   }
 }
 ```
@@ -228,7 +224,7 @@ Content-Language: it
 [
   {
     "funzione": {
-      "nome": "qualche_funzione"
+      "id": "qualche_funzione"
     },
     "visibile": false,
     "bloccato": true

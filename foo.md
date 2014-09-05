@@ -4,20 +4,21 @@ API per l'integrazione con Agenda effedesign.
 
 Sono previsti due tipologie di API:
 
-* **Permessi**: dovrà restituire le logiche di effedesign per la visualizzazione o il blocco di una certa funzionalità
-* **Funzioni**: dovrà restituire il contenuto HTML dei _box_ o _widget_
+* **Permessi**: dovrà restituire le logiche di effedesign per il blocco di una certa funzionalità visibile per l'utente
+* **Funzioni**: dovrà restituire il contenuto HTML dei _box_ o _widget_ visibili per l'utente
 
 N.B.: la lingua non è necessaria come parametro di input nel body della richiesta poiché è già previsto dallo standard HTTP come header `Accept-Language` con la codifica standard internazionale.
 Nelle risposte prenderemo come valida la lingua specificata nell'header `Content-Language`.
 
 
-## /permessi [GET]
+## /utenti/{id_utente}/permessi?contesto={cod_contesto} [GET]
 
-I permessi di tutte le funzionalità per utente.
+I permessi di tutte le funzionalità per utente, con la possibilità di filtrare per contesto (carriera).
 
 ### Richiesta
 
-Nel body della richiesta viene passata un utente.
+* `{id_utente}` è lo user-id dell'utente richiesto.
+* `{cod_contesto}` serve attualmente per gestire la carriera degli studenti. Va bene la concatenzaione di `Carriera-STU_ID`
 
 Le tipologie di _contesto_ rappresentano le varie categorie di attributi disponibili per l'utente connesso all'Agenda2.0. Partiamo dal passaggio della `carriera_studente` (praticamente è il valore di `stu_id`.)
 
@@ -27,19 +28,9 @@ Content-Type:    application/json
 Accept-Language: en-US
 ```
 
-```json
-{
-  "id" : "m.rossi",
-  "contesto": {
-    "id": "df62f04...",
-    "tipo": "carriera_studente|profilo_azienda|ecc."
-  }
-}
-```
-
 ### Risposta
 
-Rappresenta i permessi di tutte le funzionalità.
+Rappresenta i permessi di tutte le funzionalità visibili per l'utente.
 
 ```
 Request-Id:       e819a6e2-b170-44a3-9f19-094da6bf2221
@@ -51,40 +42,37 @@ Content-Language: it
 [
   {
     "funzione": {
-      "id": "funz_uno"
+      "cod": "funz_uno"
     },
-    "visibile": true,
+    "evidenziato": true,
     "bloccato": false
   },
   {
     "funzione": {
-      "id": "funz_due"
+      "cod": "funz_due"
     },
-    "visibile": true,
+    "evidenziato": true,
     "bloccato": true
   },
   {
     "funzione": {
-      "id": "funz_tre"
+      "cod": "funz_tre"
     },
-    "visibile": false,
+    "evidenziato": false,
     "bloccato": true
   }
 ]
 ```
 
-> N.B.: i flag `visibile`, `bloccato` potremmo anche unirli in un unico `stato`.
 
+## /utenti/{id_utente}/funzioni?contesto={cod_contesto} [GET]
 
-## /funzioni [GET]
-
-I contenuti di tutte le funzionalità per utente.
+I contenuti di tutte le funzionalità per utente, con la possibilità di filtrare per contesto (carriera).
 
 ### Richiesta
 
-Nel body della richiesta viene passata un utente.
-
-Le tipologie di _contesto_ rappresentano le varie categorie di attributi disponibili per l'utente connesso all'Agenda2.0. Partiamo dal passaggio della `carriera_studente` (praticamente è il valore di `stu_id`.)
+* `{id_utente}` è lo user-id dell'utente richiesto.
+* `{cod_contesto}` serve attualmente per gestire la carriera degli studenti. Va bene la concatenzaione di `Carriera-STU_ID`
 
 ```
 Accept:          application/vnd.portal+json; version=1
@@ -92,19 +80,10 @@ Content-Type:    application/json
 Accept-Language: en-US
 ```
 
-```json
-{
-  "id" : "m.rossi",
-  "contesto": {
-    "id": "df62f04...",
-    "tipo": "carriera_studente|profilo_azienda|ecc."
-  }
-}
-```
 
 ### Risposta
 
-Rappresenta il contenuto HTML di più _box_/_widget_.
+Rappresenta il contenuto HTML di uno o più _box_/_widget_.
 
 > N.B.:
 >
@@ -120,30 +99,41 @@ Content-Language: it
 ```json
 [
   {
-    "id": "funz_uno",
-    "contenuto_html": "<p>Content of the document......</p>"
+    "cod": "funz_uno",
+    "contenuto_html": "<p>Content of the document......</p>",
+    "permesso": {
+        "evidenziato": true,
+        "bloccato": true
+    }   
   },
   {
-    "id": "funz_due",
-    "contenuto_html": "<p>Content of the document......</p>"
+    "cod": "funz_due",
+    "contenuto_html": "<p>Content of the document......</p>",
+    "permesso": {
+        "evidenziato": true,
+        "bloccato": true
+    }   
   },
   {
-    "id": "funz_tre",
-    "contenuto_html": "<p>Content of the document......</p>"
+    "cod": "funz_tre",
+    "contenuto_html": "<p>Content of the document......</p>",
+    "permesso": {
+        "evidenziato": true,
+        "bloccato": true
+    }   
   }
 ]
 ```
 
+## /utenti/{id_utente}/funzioni/{cod_funzione}?contesto={cod_contesto} [GET]
 
-## /funzioni/{nome_funzione} [GET]
-
-Il contenuto di una singola funzionalità per utente.
+Il contenuto di una singola funzionalità per utente, con possibilità di filtro per contesto.
 
 ### Richiesta
 
-Nel body della richiesta viene passata un utente.
-
-Le tipologie di _contesto_ rappresentano le varie categorie di attributi disponibili per l'utente connesso all'Agenda2.0. Partiamo dal passaggio della `carriera_studente` (praticamente è il valore di `stu_id`.)
+* `{id_utente}` è lo user-id dell'utente richiesto.
+* `{cod_funzione}` codice univoco che individua una funzionalità.
+* `{cod_contesto}` serve attualmente per gestire la carriera degli studenti. Va bene la concatenzaione di `Carriera-STU_ID`
 
 ```
 Accept:          application/vnd.portal+json; version=1
@@ -151,22 +141,14 @@ Content-Type:    application/json
 Accept-Language: en-US
 ```
 
-```json
-{
-  "id" : "m.rossi",
-  "contesto": {
-    "id": "df62f04...",
-    "tipo": "carriera_studente|profilo_azienda|ecc."
-  }
-}
-```
 
 ### Risposta
 
-Rappresenta il contenuto HTML di uno _box_/_widget_.
+Rappresenta il contenuto HTML di un _box_/_widget_.
 
 > N.B.:
 >
+> * in caso di passaggio di un {cod_funzione} non visibile per l'utente va restituito uno **STATUS_CODE = 204** (No Content)
 > * non prevediamo che ci vengano restituiti i tag `<html>`, `<head>`, `<body>`, ecc.
 > * il testo contenuto dell'HTML sarà nella lingua specificata da `Content-Language` nella risposta, quanto richiesto con `Accept-Language`.
 
@@ -178,21 +160,25 @@ Content-Language: it
 
 ```json
 {
-  "id": "funz_uno",
-  "contenuto_html": "<p>Content of the document......</p>"
+  "cod": "funz_uno",
+  "contenuto_html": "<p>Content of the document......</p>",
+  "permesso": {
+     "evidenziato": true,
+     "bloccato": true
+   }
 }
 ```
 
 
-## /funzioni/{nome_funzione}/permessi [GET]
+## /utenti/{id_utente}/funzioni/{cod_funzione}/permesso?contesto={cod_contesto} [GET]
 
-I permessi di una singola funzionalità per utente.
+I permessi di una singola funzionalità per utente, con possibilità di filtro per contesto.
 
 ### Richiesta
 
-Nel body della richiesta viene passata un utente.
-
-Le tipologie di _contesto_ rappresentano le varie categorie di attributi disponibili per l'utente connesso all'Agenda2.0. Partiamo dal passaggio della `carriera_studente` (praticamente è il valore di `stu_id`.)
+* `{id_utente}` è lo user-id dell'utente richiesto.
+* `{cod_funzione}` codice univoco che individua una funzionalità.
+* `{cod_contesto}` serve attualmente per gestire la carriera degli studenti. Va bene la concatenzaione di `Carriera-STU_ID`
 
 ```
 Accept:          application/vnd.portal+json; version=1
@@ -200,19 +186,9 @@ Content-Type:    application/json
 Accept-Language: en-US
 ```
 
-```json
-{
-  "id" : "m.rossi",
-  "contesto": {
-    "id": "df62f04...",
-    "tipo": "carriera_studente|profilo_azienda|ecc."
-  }
-}
-```
-
 ### Risposta
 
-Rappresenta i permessi di una certa funzionalità.
+Rappresenta il permesso di una certa funzionalità dell'utente.
 
 ```
 Request-Id:       e819a6e2-b170-44a3-9f19-094da6bf2221
@@ -221,18 +197,15 @@ Content-Language: it
 ```
 
 ```json
-[
-  {
+{
     "funzione": {
-      "id": "qualche_funzione"
+      "cod": "funz_uno"
     },
-    "visibile": false,
-    "bloccato": true
-  }
-]
+    "evidenziato": true,
+    "bloccato": false
+}
 ```
 
 > N.B.:
 >
-> * i flag `visibile`, `bloccato` potremmo anche unirli in un unico `stato`.
-> * Anche se sappiamo a priori che non ci dovrebbe essere _mai_ più di un permesso per funzionalità, [è preferibile](https://github.com/Apex-net/AgendaBocconi/wiki/HTTP-API:-Guida-alla-Progettazione#minimizzare-nidificazione-dei-percorsi) esporre le risorse appartenenti in un ambito comunque come una collezione.
+> * in caso di passaggio di un `{cod_funzione}` non visibile per l'utente va restituito uno **STATUS_CODE = 204** (No Content)
